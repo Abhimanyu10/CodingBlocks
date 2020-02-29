@@ -19,8 +19,6 @@ int fun(int i , int j){
         return 1 + fun(i + 1 , j);
     
     auto &res = dp[i][j];
-    //if(res != -1) return res;
-//    cout << i  << "\n";
     return __MIN(fun(i + 1 , j) + 1 , fun(i , j + 1) + 1 , (s1[i] != s2[j]) + fun(i + 1 , j + 1)); 
 }
 

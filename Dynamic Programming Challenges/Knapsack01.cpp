@@ -20,11 +20,8 @@ int fun(int i , int w){
 
 
 int main(){
-    //ios_base::sync_with_stdio(0);
-   // cin.tie(0);
-    //cout.tie(0);
-    memset(dp , -1 , sizeof(dp));
-    scanf("%d%d" , &n , &w);
+	memset(dp , -1 , sizeof(dp));
+    scanf("%d%d" , &n , &m);
     for(int i =0 ;i < n;i++) scanf("%d" , &wt[i]);
     for(int i=0 ;i < n;i ++) scanf("%d" , &val[i]);
 	printf("%d\n" , fun(0 , m));
