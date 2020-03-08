@@ -5,8 +5,6 @@
 #pragma GCC optimize ("unroll-loops")
 #include<bits/stdc++.h>
 
-
-#define oo			INT_MAX/2
 #define f			first
 #define sz(a)  ((int)(a).size())
 #define s			second
@@ -31,30 +29,27 @@ using namespace std;
 using ll  = long long;
 using lld = long double;
 using l64 = int64_t;
-
+#define int ll
+const ll oo = 1e10;
 const ll MOD =1000000007;
-
-const int N = 1e5 + 100;
-int tree[N << 2];
-int ar[N];
-
-void build(int l , int r , int t){
-    if(l == r){
-        tree[t] = ar[l];
-        return;
+const int N = 100+2;
+const int maxw = 10000 + 2;
+vll ar[N];
+int dp[N][maxw];
+int w[N];
+int n, m, W;
+int fun(int i , int WW){
+    if(i == m){
+        return 0;
     }
-    int mid = (l + r) >> 1;
-    build(l , mid , t << 1);
-    build(mid + 1 , r , t << 1 | 1);
-    tree[t] = max(tree[t << 1], tree[t << 1 | 1]);
-    return;
-}
-
-int qry(int l , int r, int t, int ql , int qr){
-    if(l > qr || r < ql) return 0;
-    if(l >= ql && r <= qr) return tree[t];
-    int mid = (l + r)>>1;
-    return max(qry(l, mid, t << 1, ql, qr) , qry(mid + 1 , r , t << 1 | 1 , ql , qr));
+    auto &res = dp[i][WW];
+    if(res!=-1) return res;
+    int ans = -oo;
+    for(int j : ar[i]){
+        if(j<=WW)
+            ans = max(ans, j + fun(i + 1, WW - j));
+    }
+    return res = ans;
 }
 
 signed main(){
@@ -64,21 +59,19 @@ signed main(){
 #endif
 
     ios_base::sync_with_stdio(0);cin.tie(0);
+    memset(dp, -1, sizeof(dp));
+    cin >> n >> m >> W;
+    fo(i , n)
+        cin >> w[i];
+    
 
-    int n;
-    cin >> n;
-    int g = 0;
-    fo(i , n) cin >> ar[i];
-    build(0 , n -1 , 1);
     fo(i , n){
-        int ans = oo;
-            ans = min(ans, qry(0, n - 1, 1, 0, i - 1));
-            ans = min(ans, qry(0, n - 1, 1, i + 1, n - 1));
-        // deb(ans);
-        g += max(0 , ans-ar[i]);
+        int x;
+        cin >> x;
+        ar[x-1].pb(w[i]);
     }
-    cout << g;
+    
+    cout << (fun(0 , W)<0?-1:W-fun(0,W)) << "\n"; 
 
     return 0;
-
 }

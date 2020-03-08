@@ -33,52 +33,32 @@ using lld = long double;
 using l64 = int64_t;
 
 const ll MOD =1000000007;
-
 const int N = 1e5 + 100;
-int tree[N << 2];
-int ar[N];
-
-void build(int l , int r , int t){
-    if(l == r){
-        tree[t] = ar[l];
-        return;
-    }
-    int mid = (l + r) >> 1;
-    build(l , mid , t << 1);
-    build(mid + 1 , r , t << 1 | 1);
-    tree[t] = max(tree[t << 1], tree[t << 1 | 1]);
-    return;
-}
-
-int qry(int l , int r, int t, int ql , int qr){
-    if(l > qr || r < ql) return 0;
-    if(l >= ql && r <= qr) return tree[t];
-    int mid = (l + r)>>1;
-    return max(qry(l, mid, t << 1, ql, qr) , qry(mid + 1 , r , t << 1 | 1 , ql , qr));
-}
+ll ar[N+1],dp[N+1];
 
 signed main(){
-
+    mem(ar);
+    memset(dp, -1, sizeof(dp));
 #ifndef ONLINE_JUDGE 
     freopen("in.txt","r",stdin);
 #endif
 
     ios_base::sync_with_stdio(0);cin.tie(0);
 
-    int n;
+    int n ;
     cin >> n;
-    int g = 0;
-    fo(i , n) cin >> ar[i];
-    build(0 , n -1 , 1);
     fo(i , n){
-        int ans = oo;
-            ans = min(ans, qry(0, n - 1, 1, 0, i - 1));
-            ans = min(ans, qry(0, n - 1, 1, i + 1, n - 1));
-        // deb(ans);
-        g += max(0 , ans-ar[i]);
+        int x;
+        cin >> x;
+        ar[x]++;
     }
-    cout << g;
+    dp[0] = 0;
+    dp[1] = 1 * ar[1];
+    for(int i = 2 ; i < N ;i++)
+        dp[i] = max(dp[i - 1], dp[i - 2] + ar[i] * i);
+    
 
+    cout << *max_element(dp, dp + N);
     return 0;
 
 }

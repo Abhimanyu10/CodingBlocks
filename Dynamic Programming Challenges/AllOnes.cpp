@@ -33,29 +33,8 @@ using lld = long double;
 using l64 = int64_t;
 
 const ll MOD =1000000007;
-
-const int N = 1e5 + 100;
-int tree[N << 2];
-int ar[N];
-
-void build(int l , int r , int t){
-    if(l == r){
-        tree[t] = ar[l];
-        return;
-    }
-    int mid = (l + r) >> 1;
-    build(l , mid , t << 1);
-    build(mid + 1 , r , t << 1 | 1);
-    tree[t] = max(tree[t << 1], tree[t << 1 | 1]);
-    return;
-}
-
-int qry(int l , int r, int t, int ql , int qr){
-    if(l > qr || r < ql) return 0;
-    if(l >= ql && r <= qr) return tree[t];
-    int mid = (l + r)>>1;
-    return max(qry(l, mid, t << 1, ql, qr) , qry(mid + 1 , r , t << 1 | 1 , ql , qr));
-}
+const int N = 1e3+2;
+int ar[N][N] , dp[N][N];
 
 signed main(){
 
@@ -65,19 +44,19 @@ signed main(){
 
     ios_base::sync_with_stdio(0);cin.tie(0);
 
-    int n;
-    cin >> n;
-    int g = 0;
-    fo(i , n) cin >> ar[i];
-    build(0 , n -1 , 1);
-    fo(i , n){
-        int ans = oo;
-            ans = min(ans, qry(0, n - 1, 1, 0, i - 1));
-            ans = min(ans, qry(0, n - 1, 1, i + 1, n - 1));
-        // deb(ans);
-        g += max(0 , ans-ar[i]);
+    int n ,  m;
+    cin >> n >> m;
+    fo(i, n) fo(j, m) cin >> ar[i][j];
+    int ans = 0;
+    Fo(i , 1 , n+1){
+        Fo(j , 1 , m +1){
+            if(ar[i-1][j-1] == 1)
+                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1],dp[i-1][j-1]}) + 1;
+            
+            ans = max(ans, dp[i][j]);
+        }
     }
-    cout << g;
+    cout << ans << '\n';
 
     return 0;
 

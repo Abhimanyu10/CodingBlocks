@@ -34,27 +34,31 @@ using l64 = int64_t;
 
 const ll MOD =1000000007;
 
-const int N = 1e5 + 100;
-int tree[N << 2];
-int ar[N];
+const int N = 2e3 + 10;
+int ar[N], br[N] , dp[N][N][7];
+int n, m;
 
-void build(int l , int r , int t){
-    if(l == r){
-        tree[t] = ar[l];
-        return;
-    }
-    int mid = (l + r) >> 1;
-    build(l , mid , t << 1);
-    build(mid + 1 , r , t << 1 | 1);
-    tree[t] = max(tree[t << 1], tree[t << 1 | 1]);
-    return;
+int _max(int a=0, int b=0, int c=0 , int d=0){
+    return max(max(a, b), max(c, d));
 }
 
-int qry(int l , int r, int t, int ql , int qr){
-    if(l > qr || r < ql) return 0;
-    if(l >= ql && r <= qr) return tree[t];
-    int mid = (l + r)>>1;
-    return max(qry(l, mid, t << 1, ql, qr) , qry(mid + 1 , r , t << 1 | 1 , ql , qr));
+int fun(int i , int j, int k){
+  
+    if(i == n)
+        return 0;
+    
+    if(j == m)
+        return 0;
+    
+    auto &res = dp[i][j][k];
+    if(res != -1) return res;
+    int ans = 0;
+    if(ar[i] == br[j])
+        ans = max(ans, fun(i + 1, j + 1, k) + 1);
+    if(k > 0) //i have the option to change this or leave it as it is
+        ans = max(ans, 1 + fun(i + 1, j + 1, k - 1));
+    ans = _max(ans, fun(i, j + 1, k), fun(i + 1, j, k));
+    return res = ans;
 }
 
 signed main(){
@@ -64,21 +68,12 @@ signed main(){
 #endif
 
     ios_base::sync_with_stdio(0);cin.tie(0);
-
-    int n;
-    cin >> n;
-    int g = 0;
-    fo(i , n) cin >> ar[i];
-    build(0 , n -1 , 1);
-    fo(i , n){
-        int ans = oo;
-            ans = min(ans, qry(0, n - 1, 1, 0, i - 1));
-            ans = min(ans, qry(0, n - 1, 1, i + 1, n - 1));
-        // deb(ans);
-        g += max(0 , ans-ar[i]);
-    }
-    cout << g;
-
+    memset(dp, -1, sizeof(dp));
+    int k;
+    cin >> n >> m >> k;
+    fo(i, n) cin >> ar[i];
+    fo(i, m) cin >> br[i];
+    cout << fun(0, 0, k);
     return 0;
 
 }
